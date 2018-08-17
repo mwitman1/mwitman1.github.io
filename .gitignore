@@ -1,0 +1,6 @@
+.bundle
+.DS_Store
+.sass-cache
+_asset_bundler_cache
+node_modules
+npm-debug.log*
