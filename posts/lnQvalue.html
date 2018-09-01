@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - Barrhorn</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Phase space volume in classical systems</h1>
+              <h2 class="subheading">Determining a physical quantity that defies comprehension.</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on August 25, 2018</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <hr>
+
+            <p> In a <a href="posts/cumulants.html">previous post</a> I briefly talked about the canonical partition function and how it can be extrapolated to different temperatures by using the moments of the potential energy distribution (quantities that can be measured during a Monte Carlo simulation). You can think of this canonical partition function as the phase space volume of a classical system of interacting particles. As a reminder, the equation for the configurational part of the canonical partition function takes the following form:</p>
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;Q_c(N,V,\beta)=\dfrac{1}{N!}\int\mathbf{s}^N\exp\left[-\beta E(\Gamma_{\mathbf{s}^N})\right]" style="height:55px" />
+
+            <p> One can imagine this integral becoming quickly intractable for anything other than very small N. However there is a theoretical framework in statistical thermodynamics to actually obtain a numerical value for <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\ln Q_c"> (see DOI: <i>coming soon</i>).</p>
+
+            <p> I'm making this post because I was fascinated by the actual value of <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\ln Q_c"> that one calculates when working with even the smallest molecular systems. As a test case for our research in this area, I started off by investigating the adsorption of methane in the metal-organic framework (MOF) pictured below:</p>
+
+            <span><img class="blogimg" src="img/posts/lnQvalue/MOF950r.jpg"></span>
+
+            <p> For the purposes of performing molecular simulations, we can represent a real MOF crystal that extends periodically in many repeating units by just one (or a few) unit cell(s) as shown above. For this particular system, the unit cell is cubic with a volume of around V=11,000 cubic Angstroms. Now imagine that there are N number of methane molecules adsorbed within this MOF, and the temperature of the system is 350 K. The following plot shows the values of <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\ln Q_c"> as a function of N as calculated from our simulations:</p>
+
+            <span><img class="blogimg" src="img/posts/lnQvalue/lnQfcnN.jpg"></span>
+
+            <p> For a system specified by N=120, we observe the value of <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\ln Q_c \sim 1200">, so we can estimate that <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;Q_c \sim \exp(1200) \sim 10^{520} \sim (10^{80})^{6.5}">. In other words, the configurational phase space volume (<img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;Q_c">) for 120 methane molecules adsorbed in a 22x22x22 Angstrom box is approximately the same size as the number of atoms in 6.5 universes. This is an unfathomably large number for a system whose size is so small its already difficult to conceive. But what I find even more remarkable is the fact that this physically meaningful quantity can actually be computed in the first place. The laws of statistical thermodynamics and a few Monte Carlo simulations have given us a clever way to compute this inconceivably large number, rather than having to evaluate an otherwise intractable 3*120=360 dimensional integral to obtain the partition function (again see DOI: <i>coming soon</i> for more technical details). Very cool stuff...
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+
+</html>

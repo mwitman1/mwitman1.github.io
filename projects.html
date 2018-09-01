@@ -83,7 +83,7 @@
               <div class="carousel-caption text-left">
                 <h1>Flat-histogram Monte Carlo simulations</h1>
                 <p>Efficiently evaluating performance of porous materials in adsorption processes...</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn More</a></p>
+                <p><a class="btn btn-lg btn-primary" href="#FHMC" role="button">Learn More</a></p>
               </div>
             </div>
           </div>          
@@ -94,7 +94,7 @@
               <div class="carousel-caption text-left">
                 <h1>Neural network force fields</h1>
                 <p>Enabling highly accurate yet computationally cheap molecular dynamics...</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Coming Soon!</a></p>
+                <p><a class="btn btn-lg btn-primary" href="#NN" role="button">Learn More</a></p>
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@
               <div class="carousel-caption text-left">
                 <h1>Minimum cut graph theory techniques</h1>
                 <p>Investigating crystallographic surfaces with a formal mathematical approach...</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn More</a></p>
+                <p><a class="btn btn-lg btn-primary" href="#2DZEO" role="button">Learn More</a></p>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@
               <div class="carousel-caption text-left">
                 <h1>High-throughput screening simulations</h1>
                 <p>Systematically identifying adsorption trends in flexible materials...</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+                <p><a class="btn btn-lg btn-primary" href="#FLEX" role="button">Learn more</a></p>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@
               <div class="carousel-caption text-left">
                 <h1>Cheminformatics and computer vision algorithms to predict novel materials</h1>
                 <p>Developing computational tools to enumerate hypothetical porous crystals...</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+                <p><a class="btn btn-lg btn-primary" href="#HYP" role="button">Learn More</a></p>
               </div>
             </div>
           </div>
@@ -147,11 +147,12 @@
 
         <div class="row featurette align-items-center">
           <div class="col-md-7">
+            <a name="FHMC"></a>
             <h2 class="featurette-heading">Flat-histogram Monte Carlo simulations. <span class="text-muted">Improved algorithms for predicting materials' performance.</span></h2>
             <!-- <p class="lead">Synopsis: Monte Carlo (MC) simulations are a powerful computational tehnique to determine the thermodynamic properties of condensed matter systems. One specific type of MC, known as grand canonical MC (GCMC), is typically used to predict thermodynamic properties of open systems, e.g. it predicts how much adsorbate an adsorbent will uptake when in contact with a reservoir of that adsorbate at a given temperature and pressure. In this project we use flat-histogram MC rather than the standard GCMC to determine these important thermodynamic properties. Such flat-histogram simulations predict the system's thermodyamic properties as a continuous function of temperature and pressure, whereas GCMC can only predict these quantities at discretely chosen temperatures and pressures. Thus we more efficiently obtain information on a material's performance as an adsorbent since we can predict how it will behave as a continuous function of temperature and pressure changes whereas GCMC requires vastly more simulations to acquire the same level of granularity.</p> -->
-            <p ><strong>Research question:</strong> Can we combine advanced Monte Carlo (MC) sampling and other statistichal techniques to more effectively identify promising materials for chemical separations via computer simulations?
+            <p ><strong>Research question:</strong> Can we combine advanced Monte Carlo (MC) sampling and other statistical techniques to more effectively identify promising materials for chemical separations via computer simulations?
             <p style="margin-top: -.5em"><strong>Scientific keywords:</strong> Statistical physics, flat-histogram MC, configurational-bias MC, cumulant generating functions</p>
-            <p style="margin-top: -.5em"><strong>Technical skills:</strong> Python, C, numpy/scipy/matplotlib</p>
+            <p style="margin-top: -.5em"><strong>Technical skills:</strong> Python, C</p>
             <p style="margin-top: -.5em"><strong>Project Type:</strong> PhD Research </p>
             <p style="margin-top: -.5em"><strong>References:</strong> Coming soon</p>
           </div>
@@ -164,11 +165,12 @@
 
         <div class="row featurette align-items-center">
           <div class="col-md-7 order-md-2">
+            <a name="NN"></a>
             <h2 class="featurette-heading">Neural network force fields. <span class="text-muted">Using machine learning to perform molecular dynamics simulations.</span></h2>
             <!-- <p class="lead">Synopsis: The potential energy surface (or the potential energy as a function of atomic coordinates) of a chemical system dictates how that system will evolve in time, since its gradient determines the force on each atom. While the potential energy surface can be calculated with very high accuracy from quantum mechanics based approaches, these are typically computationally expensive and scale poorly with system size, i.e. DFT scales the best of all methods with O(N^3). However, a neural network can be trained to learn the potential energy surface from a training set of DFT calculations, and the nerual network's calculation of atomic forces is orders of magnitude faster than the DFT simulation. In this work we develop a neural network to accurately compute atomic forces in a class of materials known of zeolites, leading to faster and more accurate simulations of their dynamics.</p> -->
             <p ><strong>Research question:</strong> How well can neural networks approximate quantum chemical forces and predict important thermodynamic and kinetic properties of crystalline materials?</p>
             <p style="margin-top: -.5em"><strong>Scientific keywords:</strong> Machine Learning, Multi-layer perceptrons, Trust region optimizers</p>
-            <p style="margin-top: -.5em"><strong>Technical requirements:</strong> Python, Fortran, HPC programming, numpy/scipy/matplotlib</p>
+            <p style="margin-top: -.5em"><strong>Technical requirements:</strong> Python, Fortran, HPC programming</p>
             <p style="margin-top: -.5em"><strong>Project Type:</strong> PhD Research</p>
             <p style="margin-top: -.5em"><strong>References:</strong> Coming soon</p>
           </div>
@@ -181,11 +183,12 @@
 
         <div class="row featurette align-items-center">
           <div class="col-md-7 align-self-center">
+            <a name="2DZEO"></a>
             <h2 class="featurette-heading">Minimum cut graph theory. <span class="text-muted">Crystal surface generation and predicting 2D zeolites.</span></h2>
             <!-- <p class="lead">Synopsis: In this project we utilized a particular graph theory technique, known as the min s-t edge cut, to mathematically formalize the generation of crystal surfaces (and therefore 2D materials) from their parent 3D crystal structures. We can interpret a crystal structure as a graph with nodes corresponing to atoms and edges corresponding to bonds, which can have different weight values depending on the bond characteristics. Then the min s-t edge cut allows us to find the surface termination for a particular crystal that minimizes the sum of the weights of edges that must be cut to form that surface. High-throughput application of this technique to a library of materials known as zeolites yielded interesting insights and provided a descriptor for identifying whether a particular zeolite is likely to experimentally exhibit a 2D form. Synthesis of these 2D or atomically thin porous materials are important since they have the potential to provide much more energy efficient chemcial separations.</p> -->
             <p "><strong>Research question:</strong> Can a graph theory (mathematically formalized) approach to crystal surface generation yield information of preferred crystal faces and help predict which crystalline materials may be likely to exhibit 2D forms?</p>
             <p style="margin-top: -.5em"><strong>Scientific keywords:</strong> Graph theory, All near min-cut problem, Surface science, High-throughput screening</p>
-            <p style="margin-top: -.5em"><strong>Technical requirements:</strong> Python, numpy/scipy/matplotlib</p>
+            <p style="margin-top: -.5em"><strong>Technical requirements:</strong> Python</p>
             <p style="margin-top: -.5em"><strong>Project Type:</strong> PhD Research</p>
             <p style="margin-top: -.5em"><strong>References:</strong> <a href="https://doi.org/10.1021/acscentsci.7b00555">DOI: 10.1021/acscentsci.7b00555</a></p>
           </div>
@@ -199,6 +202,7 @@
 
         <div class="row featurette align-items-center">
           <div class="col-md-7 order-md-2">
+            <a name="FLEX"></a>
             <h2 class="featurette-heading">High-throughput materials screening. <span class="text-muted">Understanding the interplay of flexibility and adsorption.</span></h2>
             <p><strong>Research question:</strong> Does the assumption of static crystal structures bias the result of high-throughput screening predictions of adsorption behavior?</p>
             <p style="margin-top: -.5em"><strong>Scientific topics:</strong> High-throughput screening, Statistical adsorption models, Statistical physics</p>
@@ -215,7 +219,8 @@
 
         <div class="row featurette align-items-center">
           <div class="col-md-7">
-            <h2 class="featurette-heading">Cheminformatics and computer vision algorithms. <span class="text-muted">In silico prediciton of novel porous crystals.</span></h2>
+            <a name="HYP"></a>
+            <h2 class="featurette-heading">Cheminformatics and computer vision algorithms. <span class="text-muted">In silico prediction of novel porous crystals.</span></h2>
             <p><strong>Research question:</strong> Can we design an algorithm to hypothetically enumerate a special class of crystal structures (known as 1D rod materials) and are any of them experimentally synthesizable?</p>
             <p style="margin-top: -.5em"><strong>Scientific topics:</strong> Cheminformatics (SMARTS/SMILES), Point cloud fitting, Optimization, Hypothetical crystal structure generation</p>
             <p style="margin-top: -.5em"><strong>Technical requirements:</strong> Python, C++</p>
@@ -237,12 +242,12 @@
             <p style="margin-top: -.5em"><strong>Scientific topics:</strong> Principal component analysis, k-mean clustering, spectral clustering</p>
             <p style="margin-top: -.5em"><strong>Technical requirements:</strong> Image processing, Blender, Python, Matlab</p>
             <p style="margin-top: -.5em"><strong>Project Type:</strong> Personal/Science outreach </p>
-            <p style="margin-top: -.5em"><strong>References:</strong> Coming soon!</a></p>
+            <p style="margin-top: -.5em"><strong>References:</strong> <a href="https://github.com/mwitman1/ColorBooked">ColorBooked</a>; More coming soon!</p>
           </div>
           <div class="col-md-5 order-md-1">
             <!-- <img class="featurette-image img-fluid mx-auto" src="img/2Dzeolite_cover_twographsbackground.jpg" alt="Generic placeholder image"> -->
 
-            <img class="img-fluid mx-auto my-auto" src="img/projects/thumbnails/2Dzeolite_cover_twographsbackground.jpg">       
+            <img class="img-fluid mx-auto my-auto" src="img/projects/thumbnails/2Dzeocover.jpg">       
             <!-- <img class="img-fluid mx-auto my-auto" src="img/projects/thumbnails/2Dzeolite_cover_twographsbackground.jpg" style="position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)"> -->
           </div>
         </div>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - Extrapolating the canonical partition function </title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Extrapolating the canonical partition function</h1>
+              <h2 class="subheading">Cumulant generating functions, energy fluctuations, and Taylor expansions.</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on August 22, 2018</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <p> Note: Appreciating the "why" of this post may require a background in statistical mechanics, but understanding the math should not.
+
+            <hr>
+
+            <p>In statistical mechanics, the classical canonical partition function represents the volume of phase space of an N particle system occupying a box of volume V at thermodynamic temperature,  <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}\beta"/>. In other words, it consists of an integral over all degrees of freedom of all particles in the system. There are 3N configurational degrees of freedom corresponding to each particle's position <img class="eqinline" src="https://latex.codecogs.com/gif.latex?\dpi{300}&space;\mathbf{s}^N=\{\mathbf{s}_1,\mathbf{s}_2,...,\mathbf{s}_N\}"> and 3N kinetic degrees of freedom corresponding to each particle's momentum <img class="eqinline" src="https://latex.codecogs.com/gif.latex?\dpi{300}&space;\mathbf{p}^N=\{\mathbf{p}_1,\mathbf{p}_2,...,\mathbf{p}_n\}">. In a classical system we can analytically integrate out the kinetic degrees of freedom. What we can't easily calculate is the configurational part of the canonical partition function, which is shown below:</p>
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;Q_c(N,V,\beta)=\dfrac{1}{N!}\int\mathbf{s}^N\exp\left[-\beta E(\Gamma_{\mathbf{s}^N})\right]" style="height:50px" />
+
+            <p>Here <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\Gamma_{\mathbf{s}^N}" /> is microstate defined by the 3N dimensional vector of scaled coordinates, and <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;E(\Gamma_{\mathbf{s}^N})" /> is the potential energy as a function of the particle coordinates. I won't elaborate much more on the physical importance of the partition function, but will just say that it serves as the normalization term for the microstate probabilities.</p> 
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;p(\Gamma_{\mathbf{s}^N})\propto\exp\left[-\beta E(\Gamma_{\mathbf{s}^N})\right]" style="height:25px" />
+
+            <p>Typically one uses Monte Carlo simulations to avoid dealing with this high-dimensional integral that is impossibly complex to directly compute for all but the simplest toy systems. However, there are simulation techniques that yield the value of <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;Q_c"> without directly evaluating this integral (DOI: coming soon), even though its numerical value is <a href=posts/lnQvalue.html">impossibly large to comprehend</a>. In these types of studies where <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;Q_c"> (or <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\ln Q_c">) is determined for a given system, it is useful to approximate its temperature dependence via Taylor expansion:</p>
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\ln Q_c(N,V,\beta') \approx \ln Q_c(N,V,\beta) + \sum_{a \geq 1} \dfrac{1}{a!}\dfrac{\partial ^a \ln Q_c(N,V,\beta)}{\partial \beta ^a} (\beta' - \beta)^a" style="height: 60px">
+
+            <p> Now, let's look what happens if we take the natural log of the partition function, followed by the derivative with respect to <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}\beta">.</p>
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\dfrac{\partial\ln&space;Q_c(N,V,\beta)}{\partial\beta}=-\dfrac{\int\mathbf{s}^NE\exp\left[-\beta&space;E(\Gamma_{\mathbf{s}^N})\right]}{\int\mathbf{s}^N\exp\left[-\beta&space;E(\Gamma_{\mathbf{s}^N})\right]}=-\left<E\right>" style="height:60px">
+
+            <p> We can see that our expression evaluates to the expectation value of the system's potential energy, or the first order moment of its potential energy distribution. So why is all of this useful? We can run a Monte Carlo (MC) simulation in the canonical ensemble, obtain the average potential energy, and then we know to a first order approximation the slope of the canonical partition function as a function of <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\beta">. Now what happens if we take the second derivative with respect to <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\beta">? Using the fact that:</p>
+            
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\dfrac{\int\mathbf{s}^NE^n\exp\left[-\beta&space;E(\Gamma_{\mathbf{s}^N})\right]}{\int\mathbf{s}^N\exp\left[-\beta&space;E(\Gamma_{\mathbf{s}^N})\right]}=\left<E^n\right>" style="height:60px">
+
+            <p>you can work through the algebra and should end up with the following: </p>
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\dfrac{\partial^2\ln&space;Q_c(N,V,\beta)}{\partial\beta^2}=\left<E^2\right>-\left<E\right>^2" style="height:60px">
+
+            <p> So the second derivative can be related to the first and second moments of the potential energy distribution. Note that <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\left<E^2\right>-\left<E\right>^2=\left<E^2-2E\left<E\right>+\left<E\right>^2\right>=\left<(E-\left<E\right>)^2\right>">, such that the derivative can be expressed in terms of either the central rather non-central moments. With many steps of algebra, one can continue taking higher order derivatives:</p>
+
+            <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\dfrac{\partial^3\ln&space;Q_{c}(N,V,\beta)}{\partial&space;\beta&space;^3}=-\left<(E-\left<E\right>)^3&space;\right>" style="height:55px">
+            <p></p>
+            <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\dfrac{\partial^4 \ln Q_{c}(N,V,\beta)}{\partial \beta ^4} = \left\langle ( E - \left\langle E \right\rangle )^4 \right\rangle - 3 \left\langle ( E - \left\langle E \right\rangle )^2 \right\rangle ^2" style="height:55px">
+            <p></p>
+            <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\dfrac{\partial^5 \ln Q_{c}(N,V,\beta)}{\partial \beta ^5} = \cdots" style="height: 55px">
+
+            <p> The evaluation of these derivatives shows the natural log of the partition function is a cumulant generating function. See the <a href="https://en.wikipedia.org/wiki/Cumulant">Wikipedia</a> entry for more math details on the relationship between cumulants, moments, central-moments, etc., but the fact that the canonical partition function is cumulant generating means we can determine its curvature with respect to <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\beta"> by computing the moments of the potential energy distribution as sampled during an MC simulation. One can use either the central or non-central moments to evaluate these derivatives, but in practice it saves an enormous amount of disk space to use the non-central moments since on can simply accumulate <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;E,E^2,E^3,..."> throughout the course of the simulation. Now the partition function can be estimated at a new temperature, provided the Taylor expansion is valid over the extrapolation range and enough statistics have been accumulated to accurately estimate the moments of the energy distribution.</p>
+
+          </div>
+        </div>
+      </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+</html>

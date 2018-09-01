@@ -78,6 +78,17 @@ img::-moz-selection {
   background: transparent;
 }
 
+.eqinline {
+  height: 1.2em;
+}
+
+.blogimg {
+  position: relative; 
+  left: 50%; 
+  margin-right: -50%; 
+  transform: translate(-50%, 0%);
+}
+
 #mainNav {
   position: absolute;
   border-bottom: 1px solid #e9ecef;

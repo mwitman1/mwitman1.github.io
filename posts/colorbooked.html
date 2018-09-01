@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - Barrhorn</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Automated coloring book image generation</h1>
+              <h2 class="subheading">A simple three step process to create coloring book images.</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on August 29, 2018</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <hr>
+
+            <h5>Motivation</h5>
+
+            <p> This post describes a pet project that was inspired by the involvement of UC Berkeley graduate students in the scientific outreach program known as BASIS. For this program, we create simple hands-on experiments to demonstrate various scientific topics and then visit elmentary school students in the Bay Area to give the lesson plans in person. Recently, a fellow grad student had the great idea to create and distribute a coloring book publication that illustrates and describes our research in a way that is accessible to children of this age group. Since it is a very time consuming task to draw these coloring book images by hand, I wondered if there was a feasible way to keep creating these scientific color books beyond our first publication. For example, could we take cover images from scientific journals and automatically turn them into coloring book images for a monthly or bi-monthly publication?</p>
+
+            <h5>Algorithm</h5>
+
+            <p> After reading about various image processing and unsupervised learning techniques and some trial and error, here is a simple procedure one can use to automate the task of coloring book image generation with a few simple steps.</p>
+
+            <ol>
+              <li>Apply Gaussian blur to the intial image. This smooths out overly detailed features that otherwise result in excessively small color domains in the final coloring book image.</li>
+              <li>Utilize the simple yet powerful unsupervised learning (clustering) algorithm known as K-means clustering to reduce the RGB color image into k principal colors that best represent the original image. </li>
+              <li>Perform edge detection separately on each color channel in the color segmented image.</li>
+            </ol>
+
+            <p>The Python program I wrote to do this can be found <a href="https://github.com/mwitman1/ColorBooked">here</a>.</p>
+
+
+            <h5>Image processing with K-means</h5>
+
+            <p> The important step in this workflow is the k-means color segmentation of the original image. The goal of k-means is mathematically formalized as follows:</p>
+
+            <img src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\underset{x}{\operatorname{arg\text{ }min}}=\sum_{i=1}^{k} \sum_{\mathbf{x} \in S_i} \lvert \lvert \mathbf{x} - \mathbf{\mu}_i \rvert \rvert ^2" style="height: 70px"> 
+
+            <p> Here <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;(\mathbf{x}_1, \mathbf{x}_2, ... , \mathbf{x}_m)"> are set of m observations (in the case of an RGB image <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\mathbf{x}_j \in \mathbb{R}^3"> just corresponds to the pixel values). Each of the m data points are assigned to one of k different sets <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\mathbf{S} = {S_1, S_2, ... , S_k}">, where <img class="eqinline" src="http://latex.codecogs.com/gif.latex?\dpi{300}&space;\mathbf{\mu}_i = \vert S_i \vert^{-1} $\sum_{\mathbf{x} \in S_i}$ \mathbf{x}"> is just the mean of all points assigned to set i. The algorithm seeks to perform this assingment so as to minimize the loss function above. While this problem is np-hard, the k-means algorithm quickly converges to a local optimum and is sufficient for many applications. For those in which it is not sufficient there exist a variety of more complex <a href="http://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html">clustering algorithms</a>.</p>
+
+            <p> Here's an example of an original image...</p>
+
+            <span><img class="img" src="img/posts/colorbooked/RedBanksSunrise.jpg" alt="" style="max-width: 100%"></span>
+
+            <p> ... for which I've plotted a random sampling of 10,000 pixels by their RGB color values on the x, y, and z axes, and each is color coded by its RGB value.</p>
+
+            <span><img class="img" src="img/posts/colorbooked/rgbmap.jpg" alt="" style="position: relative; left: 50%; margin-right: -50%; transform: translate(-50%, 0%)"></span>
+
+            <p> After running the k-means algorithm and optimizing the cluster centroids, each pixel is assigned to the closest centroid and its RGB color set to the RGB coordinates of that centroid.</p>
+
+            <span><img class="img" src="img/posts/colorbooked/rgbcolorized.jpg" alt="" style="position: relative; left: 50%; margin-right: -50%; transform: translate(-50%, 0%)"></span>
+
+            <p> The resulting coloring book image then looks like:
+
+            <span><img class="img" src="img/posts/colorbooked/RedBanksSunrise_colorized12.jpg" alt="" style="max-width: 100%"></span>
+
+            <p> The advantage of segmenting the image into domains of only k principal colors is twofold. First, it immediately provides the "already filled in" coloring book image. Secondly, a subtle but important consequence of the k-means clustering is that the edge detection step is now trivial. The edge can simply be drawn between any adjacent pixels with differing RGB values. If performing edge detection directly after Step 1, the final coloring book image would be dependent on the edge detection algorithm and its input parameters, and would not necessarily produce closed contours corresponding to one color domain. Therefore k-means gives us a robust and well-defined way of drawing the edges that are consistent with the requirements of a coloring book image:</p>
+
+            <span><img class="img" src="img/posts/colorbooked/RedBanksSunrise_outlined12_blur3.0_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+
+            <p></p>
+
+            <h5>Some more examples</h5>
+
+            <p>Here are a few examples of generating coloring book images. In general, to make easier (more complex) images one should apply a a higher (lower) strength Gaussian blur in Step 1 and choose less (more) colors in Step 2.</p>
+
+            <span><img class="img" src="img/posts/colorbooked/butterfly.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="img" src="img/posts/colorbooked/butterfly_colorized12.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="img" src="img/posts/colorbooked/butterfly_outlined12_blur3.8_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+
+            <p></p>
+
+            <span><img class="img" src="img/posts/colorbooked/barrhorn.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="img" src="img/posts/colorbooked/barrhorn_colorized12.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="img" src="img/posts/colorbooked/barrhorn_outlined12_blur6.5_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+
+            <p></p>
+
+            <span><img class="img" src="img/posts/colorbooked/rubberbands.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="img" src="img/posts/colorbooked/rubberbands_colorized12.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="img" src="img/posts/colorbooked/rubberbands_outlined12_blur2.6_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+
+            <p></p>
+
+            <h5>Next steps</h5>
+
+            <p> The main goal here was to produce a working algorithm as quickly as possible for the goal of automating coloring book image generation. Now we can contact some of the major publishers in our research fields and see if we are allowed to take cover images that we find interesting and convert them into coloring book images for distribution in our BASIS outreach program. In the future it will be fun to play around with more complex unsupervised learning algorithms for this particular application.</p>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+
+</html>
