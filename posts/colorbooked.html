@@ -20,7 +20,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>CompMattSci - Barrhorn</title>
+    <title>CompMattSci - Coloring Book Image Generation</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -87,7 +87,7 @@
               <li>Perform edge detection separately on each color channel in the color segmented image.</li>
             </ol>
 
-            <p>The Python program I wrote to do this can be found <a href="https://github.com/mwitman1/ColorBooked">here</a>.</p>
+            <p>The Python program I wrote to do this can be found <a href="https://github.com/mwitman1/ColorBooked" target="_blank">here</a>.</p>
 
 
             <h5>Image processing with K-means</h5>
@@ -100,23 +100,23 @@
 
             <p> Here's an example of an original image...</p>
 
-            <span><img class="img" src="img/posts/colorbooked/RedBanksSunrise.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/RedBanksSunrise.jpg" alt=""></span>
 
             <p> ... for which I've plotted a random sampling of 10,000 pixels by their RGB color values on the x, y, and z axes, and each is color coded by its RGB value.</p>
 
-            <span><img class="img" src="img/posts/colorbooked/rgbmap.jpg" alt="" style="position: relative; left: 50%; margin-right: -50%; transform: translate(-50%, 0%)"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/rgbmap.jpg" alt=""></span>
 
             <p> After running the k-means algorithm and optimizing the cluster centroids, each pixel is assigned to the closest centroid and its RGB color set to the RGB coordinates of that centroid.</p>
 
-            <span><img class="img" src="img/posts/colorbooked/rgbcolorized.jpg" alt="" style="position: relative; left: 50%; margin-right: -50%; transform: translate(-50%, 0%)"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/rgbcolorized.jpg" alt=""></span>
 
             <p> The resulting coloring book image then looks like:
 
-            <span><img class="img" src="img/posts/colorbooked/RedBanksSunrise_colorized12.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/RedBanksSunrise_colorized12.jpg" alt=""></span>
 
             <p> The advantage of segmenting the image into domains of only k principal colors is twofold. First, it immediately provides the "already filled in" coloring book image. Secondly, a subtle but important consequence of the k-means clustering is that the edge detection step is now trivial. The edge can simply be drawn between any adjacent pixels with differing RGB values. If performing edge detection directly after Step 1, the final coloring book image would be dependent on the edge detection algorithm and its input parameters, and would not necessarily produce closed contours corresponding to one color domain. Therefore k-means gives us a robust and well-defined way of drawing the edges that are consistent with the requirements of a coloring book image:</p>
 
-            <span><img class="img" src="img/posts/colorbooked/RedBanksSunrise_outlined12_blur3.0_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/RedBanksSunrise_outlined12_blur3.0_canny0.1.jpg" alt=""></span>
 
             <p></p>
 
@@ -124,27 +124,27 @@
 
             <p>Here are a few examples of generating coloring book images. In general, to make easier (more complex) images one should apply a a higher (lower) strength Gaussian blur in Step 1 and choose less (more) colors in Step 2.</p>
 
-            <span><img class="img" src="img/posts/colorbooked/butterfly.jpg" alt="" style="max-width: 100%"></span>
-            <span><img class="img" src="img/posts/colorbooked/butterfly_colorized12.jpg" alt="" style="max-width: 100%"></span>
-            <span><img class="img" src="img/posts/colorbooked/butterfly_outlined12_blur3.8_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/butterfly.jpg" alt=""></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/butterfly_colorized12.jpg" alt=""></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/butterfly_outlined12_blur3.8_canny0.1.jpg" alt=""></span>
 
             <p></p>
 
-            <span><img class="img" src="img/posts/colorbooked/barrhorn.jpg" alt="" style="max-width: 100%"></span>
-            <span><img class="img" src="img/posts/colorbooked/barrhorn_colorized12.jpg" alt="" style="max-width: 100%"></span>
-            <span><img class="img" src="img/posts/colorbooked/barrhorn_outlined12_blur6.5_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/barrhorn.jpg" alt=""></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/barrhorn_colorized12.jpg" alt=""></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/barrhorn_outlined12_blur6.5_canny0.1.jpg" alt=""></span>
 
             <p></p>
 
-            <span><img class="img" src="img/posts/colorbooked/rubberbands.jpg" alt="" style="max-width: 100%"></span>
-            <span><img class="img" src="img/posts/colorbooked/rubberbands_colorized12.jpg" alt="" style="max-width: 100%"></span>
-            <span><img class="img" src="img/posts/colorbooked/rubberbands_outlined12_blur2.6_canny0.1.jpg" alt="" style="max-width: 100%"></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/rubberbands.jpg" alt=""></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/rubberbands_colorized12.jpg" alt=""></span>
+            <span><img class="blogimg" src="img/posts/colorbooked/rubberbands_outlined12_blur2.6_canny0.1.jpg" alt=""></span>
 
             <p></p>
 
             <h5>Next steps</h5>
 
-            <p> The main goal here was to produce a working algorithm as quickly as possible for the goal of automating coloring book image generation. Now we can contact some of the major publishers in our research fields and see if we are allowed to take cover images that we find interesting and convert them into coloring book images for distribution in our BASIS outreach program. In the future it will be fun to play around with more complex unsupervised learning algorithms for this particular application.</p>
+            <p> Now that we have a simple tool for automating coloring book image generation, we can contact the major publishers in our research fields and try to obtain permission to take various cover images and convert them into coloring book images for distribution in our BASIS outreach program. In the future it will also be fun to play around with more complex unsupervised learning algorithms for this particular application.</p>
 
           </div>
         </div>
