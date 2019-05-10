@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - GNU Parallel for accelerating desktop molecular simulations</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Desktop parallelization with GNU Parallel</h1>
+              <h2 class="subheading">A quick example of accelerating desktop molecular simulations with GNU Parallel</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on May 9, 2019</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <p>Recently I found myself without access to the computing clusters that I usually use for research and am currently relying on just a few desktops to get some results in the meantime. I need to run a very large number of relatively small size molecular simulations (Monte Carlo and Molecular Dynamics), which luckily is a perfect application for GNU parallel. Due to the small size of each individual simulation, there wouldn't be a lot to gain by using LAMMPS's MPI capabilities, and running each simulation on an individual thread on my desktop is even faster than running on our very old cluster. Now I just need to efficiently make full use of all the cores on the desktops I have to run the individual simulations.
+
+            For some time I was writing custom bash scripts that would run processes in the background and I would manually have to monitor their completion before starting a new simulation. Supposing I have to run <code>N</code> simulations and have <code>max_procs</code>  that I can use on a given machine, I would do something like:
+            <pre>
+            <code> 
+              <span>for i in $(seq 1 $N); do</span>
+              <span>  # A = check_num_active_processes()</span>
+              <span>  if [ "$A" -lt "$max_procs" ] ; then</span>
+              <span>    ./run_simulation.sh $i &</span>
+              <span>  fi</span>
+              <span>done</span>  
+            </code>
+            </pre>  
+            The problem is the function <code>check_num_active_processes()</code> takes some additional effort to write, and maybe sometimes you just want more functionality than the bare bones script above.</p>
+
+            <p> Luckily GNU Parallel removes all sorts of headaches and presents a one-liner replacement for the above script with infinitely more functionality. In my case, <code>./run_simulation.sh</code> takes only one command line argument, but one could certaintly pipe more information if more command line arguments were needed by the script used to run your simulations: 
+
+            </p>
+
+            <p><code>for i in $(seq 1 $N); do echo $N; done | parallel -j 8 --timeout 86400 --delay 1 "./run_simulation.sh {}"</code>
+            
+            <p> As simple as that, you can seemlessly run <code>N</code> simulations using 8 cores (with some additional options specified). With three desktops available to me, I can get a factor of 24x speedup compared to running serialized jobs on a single thread per machine. This is a huge timesaver for me since I have to execute <code>./run_simulation.sh</code> thousands of times to get the data I need.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+
+</html>
