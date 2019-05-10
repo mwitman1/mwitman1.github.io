@@ -77,7 +77,7 @@
             <pre>
             <code> 
               <span>for i in $(seq 1 $N); do</span>
-              <span>  # A = check_num_active_processes()</span>
+              <span>  A = check_num_active_processes()</span>
               <span>  if [ "$A" -lt "$max_procs" ] ; then</span>
               <span>    ./run_simulation.sh $i &</span>
               <span>  fi</span>
@@ -86,11 +86,13 @@
             </pre>  
             The problem is the function <code>check_num_active_processes()</code> takes some additional effort to write, and maybe sometimes you just want more functionality than the bare bones script above.</p>
 
-            <p> Luckily GNU Parallel removes all sorts of headaches and presents a one-liner replacement for the above script with infinitely more functionality. In my case, <code>./run_simulation.sh</code> takes only one command line argument, but one could certaintly pipe more information if more command line arguments were needed by the script used to run your simulations: 
-
-            </p>
+            <p> Luckily GNU Parallel removes all sorts of headaches and presents a one-liner replacement for the above script with infinitely more functionality. In my case, <code>./run_simulation.sh</code> takes only one command line argument, so the above script can executed much more robustly: </p>
 
             <p><code>for i in $(seq 1 $N); do echo $N; done | parallel -j 8 --timeout 86400 --delay 1 "./run_simulation.sh {}"</code>
+
+            <p> And if you your <code>./run_simulation.sh</code> takes multiple parameters, you can do something like the following:
+
+            <p><code>T=300; for i in $(seq 1 $N); do echo $N $T; done | parallel -j 8 --timeout 86400 --delay 1 --colsep ' ' ./run_simulation.sh {1} {2}</code>
             
             <p> As simple as that, you can seemlessly run <code>N</code> simulations using 8 cores (with some additional options specified). With three desktops available to me, I can get a factor of 24x speedup compared to running serialized jobs on a single thread per machine. This is a huge timesaver for me since I have to execute <code>./run_simulation.sh</code> thousands of times to get the data I need.
             </p>
