@@ -20,7 +20,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>CompMattSci - GNU Parallel for accelerating desktop molecular simulations</title>
+    <title>CompMattSci - Pandas Data Cleaning</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -57,11 +57,11 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="post-heading">
-              <h1>Desktop parallelization with GNU Parallel</h1>
-              <h2 class="subheading">A quick example of accelerating desktop molecular simulations with GNU Parallel</h2>
+              <h1>Pandas data cleaning</h1>
+              <h2 class="subheading">Apply a variable function to a variable column</h2>
               <span class="meta">Posted by
                 <a href="index.html">Matt Witman</a>
-                on May 9, 2019</span>
+                on July 23, 2019</span>
             </div>
           </div>
         </div>
@@ -74,28 +74,63 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
 
-            <p>Recently I found myself without access to the computing clusters that I usually use for research and am currently relying on just a few desktops to get some results in the meantime. I need to run a very large number of relatively small size molecular simulations (Monte Carlo and Molecular Dynamics), which luckily is a perfect application for GNU parallel. Due to the small size of each individual simulation, there wouldn't be a lot to gain by using LAMMPS's MPI capabilities, and running each simulation on an individual thread on my desktop is even faster than running on our very old cluster. Now I just need to efficiently make full use of all the cores on the desktops I have to run the individual simulations.
+            <p>Pandas provides a nice <a href="# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.apply.html"><code class="language-python">pandas.Series.apply()</code></a> function for invoking a function on values in a Series, i.e. transform a column in a DataFrame. Below is a template function demonstrating how flexibly and succinctly we can apply arbitrary transformations to our data. <code class="language-python">transform_df()</code> modifies a DataFrame in place based on a variable column name and a variable function using setattr and getattr (note the use of **kwargs allows us to easily apply any function we want on a given column). For a current project, we have a database of hundreds/thousands of columns, many of which need to be modified in different ways. I found this method to be quite helpful in keeping my data cleaning process neat and organized. 
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
 
-            For some time I was writing custom bash scripts that would run processes in the background and I would manually have to monitor their completion before starting a new simulation. Supposing I have to run <code>N</code> simulations and have <code>max_procs</code>  that I can use on a given machine, I would do something like:
-            <pre><code class="language-bash">for i in $(seq 1 $N); do
-    A = check_num_active_processes()
-    while [ "$A" -ge "$max_procs" ] ; do
-        sleep 10
-    done
-    ./run_simulation.sh $i &
-done</code></pre>  
-            The problem is the function <code>check_num_active_processes()</code> takes some additional effort to write, and maybe sometimes you just want more functionality than the bare bones script above.</p>
+def minus_one_to_hex(val):
+    return hex(val-1)
 
-            <p> Luckily GNU Parallel removes all sorts of headaches and presents a one-liner replacement for the above script with infinitely more functionality. In my case, <code>./run_simulation.sh</code> takes only one command line argument, so the above script can executed much more robustly: </p>
+def weird_function(val, to_mod=True, denom=2, scale=4):
+    if to_mod:
+        return val%denom
+    else:
+        return val/denom*scale
 
-            <p><code class="language-bash">for i in $(seq 1 $N); do echo $N; done | parallel -j 8 --timeout 86400 --delay 1 "./run_simulation.sh {}"</code>
+def transform_df(df, col, func, **kwargs):
+    setattr(df, col, getattr(df,col).apply(func,**kwargs))
 
-            <p> And if you your <code>./run_simulation.sh</code> takes multiple parameters, you can pipe them by making sure to specify an empty space between arguments with the colsep keyword:
+d = {'col1': [1, 2, 3], 'col2': [4, 5, 6], 'col3': [7, 8, 9]}
+df = pd.DataFrame(d)
+print("Original:")
+print(df)
 
-            <p><code class="language-bash">T=300; for i in $(seq 1 $N); do echo $N $T; done | parallel -j 8 --timeout 86400 --delay 1 --colsep ' ' ./run_simulation.sh {1} {2}</code>
-            
-            <p> As simple as that, you can seemlessly run <code>N</code> simulations using 8 cores (with some additional options specified). With three desktops available to me, I can get a factor of 24x speedup compared to running serialized jobs on a single thread per machine. This is a huge timesaver for me since I have to execute <code>./run_simulation.sh</code> thousands of times to get the data I need.
-            </p>
+print("Alter 'col1':")
+transform_df(df,'col1',np.square)
+print(df)
+
+print("Alter 'col2':")
+transform_df(df,'col2',minus_one_to_hex)
+print(df)
+
+print("Alter 'col3':")
+kwargs={'to_mod':True, 'denom':3, 'scale':1.22}
+transform_df(df,'col3',weird_function, **kwargs)
+print(df) 
+            </code></pre>
+
+            <pre><code class="language-none"> >>>
+Original:
+   col1  col2  col3
+0     1     4     7
+1     2     5     8
+2     3     6     9
+Alter 'col1':
+   col1  col2  col3
+0     1     4     7
+1     4     5     8
+2     9     6     9
+Alter 'col2':
+   col1 col2  col3
+0     1  0x3     7
+1     4  0x4     8
+2     9  0x5     9
+Alter 'col3':
+   col1 col2  col3
+0     1  0x3     1
+1     4  0x4     2
+2     9  0x5     0
+          </code></pre>
 
           </div>
         </div>
@@ -109,8 +144,7 @@ done</code></pre>
 
     <!-- Prism for code highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/components/prism-bash.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/components/prism-python.min.js"></script>
   </body>
 
   <!-- Bootstrap core JavaScript -->
