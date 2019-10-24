@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - Multi-target regression with XGBoost</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+    <!-- for code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/themes/prism-okaidia.min.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Pandas data cleaning</h1>
+              <h2 class="subheading">Apply a variable function to a variable column</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on July 23, 2019</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <p>What happens when you have a multi-target regression problem... scikit-learn nicely provides the <a href="# https://scikit-learn.org/stable/modules/generated/sklearn.multioutput.MultiOutputRegressor.html"><code class="language-python">MultiOutputRegressor()</code></a> class.
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+
+def minus_one_to_hex(val):
+    return hex(val-1)
+
+def weird_function(val, to_mod=True, denom=2, scale=4):
+    if to_mod:
+        return val%denom
+    else:
+        return val/denom*scale
+
+def transform_df(df, col, func, **kwargs):
+    setattr(df, col, getattr(df,col).apply(func,**kwargs))
+
+d = {'col1': [1, 2, 3], 'col2': [4, 5, 6], 'col3': [7, 8, 9]}
+df = pd.DataFrame(d)
+print("Original:")
+print(df)
+
+print("Alter 'col1':")
+transform_df(df,'col1',np.square)
+print(df)
+
+print("Alter 'col2':")
+transform_df(df,'col2',minus_one_to_hex)
+print(df)
+
+print("Alter 'col3':")
+kwargs={'to_mod':True, 'denom':3, 'scale':1.22}
+transform_df(df,'col3',weird_function, **kwargs)
+print(df) 
+            </code></pre>
+
+            <pre><code class="language-none"> >>>
+Original:
+   col1  col2  col3
+0     1     4     7
+1     2     5     8
+2     3     6     9
+Alter 'col1':
+   col1  col2  col3
+0     1     4     7
+1     4     5     8
+2     9     6     9
+Alter 'col2':
+   col1 col2  col3
+0     1  0x3     7
+1     4  0x4     8
+2     9  0x5     9
+Alter 'col3':
+   col1 col2  col3
+0     1  0x3     1
+1     4  0x4     2
+2     9  0x5     0
+          </code></pre>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+    <!-- Prism for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/components/prism-python.min.js"></script>
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+
+</html>

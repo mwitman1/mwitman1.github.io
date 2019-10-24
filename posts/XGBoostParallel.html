@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - Multi-target regression with XGBoost</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+    <!-- for code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/themes/prism-okaidia.min.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Multi-target regression with XGBoost</h1>
+              <h2 class="subheading">Determining the parallelization scheme that minimizes training time</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on October 21, 2019</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <p>What happens when you have a multi-target regression problem and you still want to use XGBoost's implementation of gradient boosting trees (or any other regressor that does not natively support multi-target regression)? Probably the quickest solution is to use scikit-learn's <a href=" https://scikit-learn.org/stable/modules/generated/sklearn.multioutput.MultiOutputRegressor.html" target="_blank"><code class="language-python">MultiOutputRegressor()</code></a>, a wrapper that fits one regressor per target.
+
+            <pre><code class="language-python">import xgboost as xgb
+from sklearn.multioutput import MultiOutputRegressor
+
+# some function to return your training data
+X, y = import_and_prepare_your_training_data()
+print("Training samples: %d"%X.shape[0])
+print("Input features: %d"%X.shape[1]))
+print("Targets: %d"%y.shape[1]))
+
+model1 = MultiOutputRegressor(\
+  xgb.XGBRegressor(objective='reg:squarederror'))
+
+model1.fit(X,y)
+            </code></pre>
+
+                        <pre><code class="language-none"> >>>
+Training samples: 1000
+Input features: 145
+Targets: 118
+          </code></pre>
+
+            <p>Quite easily one can now use XGBoost for multi-target regression. However, when dealing with large training sets, a little performance optimization can go a long way to reduce the required training time and one must be careful to parallelize the workload at the approptriate level. Recalling that scikit-learn's <a href=" https://scikit-learn.org/stable/modules/generated/sklearn.multioutput.MultiOutputRegressor.html" target="_blank"><code class="language-python">MultiOutputRegressor()</code></a> is training one regressor per target value, its built in multiprocessing will distribute the training of one XGBoost regressor per <code class="language-python">n_jobs</code> CPUs until all targets have been trained. Contrarily, XGBoost uses MPI threading to parallelize the training of a single XGBoost regressor over however the <code class="language-python">nthread</code> CPUs allocated for the job, a task which subsequently must be serially executed by scikit-learn for the number of targets in our problem. Making 10 CPUs available for the training, we can see that scikit-learn's parallelization scheme in this multi-target regression application provides a speed up in training time of about 4x. This is quite nice as my dataset actually contains ~400,000 training examples (not the 1,000 shown below), thus saving me hours of train time.
+
+            <pre><code class="language-python">import xgboost as xgb
+from sklearn.multioutput import MultiOutputRegressor
+import time
+
+# some function to return your training data
+X, y = import_and_prepare_your_training_data()
+
+model1 = MultiOutputRegressor(\
+  xgb.XGBRegressor(objective='reg:squarederror'),n_jobs=10)
+
+model2 = MultiOutputRegressor(\
+  xgb.XGBRegressor(objective='reg:squarederror',nthread=10))
+
+start1 = time.time()
+model1.fit(X,y)
+end1 = time.time()
+
+start2 = time.time()
+model2.fit(X,y)
+end2 = time.time()
+
+print("Model 1 execution time: %.2f"%(end1-start1))
+print("Model 2 execution time: %.2f"%(end2-start2))
+
+            </code></pre>
+
+            <pre><code class="language-none"> >>>
+Model 1 execution time: 14.74
+Model 2 execution time: 65.21
+          </code></pre>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+    <!-- Prism for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/components/prism-python.min.js"></script>
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+
+</html>
