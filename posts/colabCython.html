@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124171345-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-124171345-1');
+    </script>
+
+    <base href = "../" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CompMattSci - Boosting your Colab project with Cython</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="css/clean-blog.min.css" rel="stylesheet"> -->
+    <link href="css/clean-blog.css" rel="stylesheet">
+
+    <!-- icons -->
+    <link rel="stylesheet" type="text/css" href="web-fonts-with-css/css/fontawesome-all.css">
+    <!-- academicons -->
+    <link rel="stylesheet" href="academicons-1.8.6/css/academicons.css">
+
+    <!-- for code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/themes/prism-okaidia.min.css">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav> -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav"></nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/headers/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="post-heading">
+              <h1>Boosting your Colab project with Cython</h1>
+              <h2 class="subheading">Accelerting a custom finite differencing scheme by orders of magnitude with Cython in Colab.</h2>
+              <span class="meta">Posted by
+                <a href="index.html">Matt Witman</a>
+                on May 10, 2020</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+
+            <p>What happens when your standard Python numerical computing libraries don't contain an operation you need? If you're forced to write a custom operation and it requires a for loop (i.e. you can't easily vectorize the operation using standard numpy/scipy operations), Cython may be a lifesaver. I recently encountered this when using the Method of Lines to solve some partial differential equations that model unsteady-state diffusion and reaction within a spherical catalyst pellet (more on this interesting chemical engineering problem in a future blog post). I'll present an example of setting up a custom finite difference calculation using Cython within a Google Colab notebook.</p>
+
+            <p>Within Colab, first load cython:</p>
+
+            <pre><code class="language-python">%load_ext python</code></pre>
+
+            <p>Next, cimport both cython and numpy, then write your function (remembering to declare return and all variable types). For some background, <code>fd_interior_spherical_axisymmetic()</code> numerically approximates the spatial derivate term for the axisymmetric spherical diffusion problem (see <a href="https://dx.plos.org/10.1371/journal.pone.0135506">DOI: 10.1371/journal.pone.0135506</a> for details).</p>
+
+            <small>
+            <pre><code class="language-python">%%cython
+cimport cython
+cimport numpy as np
+
+cdef inline np.ndarray[np.float64_t, ndim=1] fd_interior_spherical_axisymmetic(\
+                                            np.ndarray[np.float64_t, ndim=1] f,
+                                            np.float64_t dr_nondim):
+  """
+  f : numpy array for the concentration as a function of r (r from 0 to 1)
+  dr : the distance between radial points (non-dimensionalized)
+
+  returns :
+    numerical approximation of the spatial derivative terms at the interior 
+    discretized points of an axisymmetric, spherical particle, i.e. : 
+    1/r^2 d(r^2 df/dr)/dr
+  """
+
+  cdef int i = 1
+  cdef int endpts = 2
+  cdef np.ndarray[np.float64_t, ndim=1] answer
+  answer = np.zeros(f.shape[0]-endpts, dtype=np.float64)
+
+  for i in range(1,f.shape[0]-1):
+    answer[i-1]=((i+1)*f[i+1]- 2*i*f[i] + (i-1)*f[i-1])/(i*dr_nondim**2)
+
+  return answer
+
+def fd_interior_spherical_axisymmetic_wrapper(np.ndarray[np.float64_t, ndim=1] f,
+                                              np.float64_t dr_nondim):
+  return fd_interior_spherical_axisymmetic(f,dr_nondim)
+
+import numpy as np
+import timeit</code></pre></small>
+
+            <p>Let's now define a pure pythonic function to do the same:</p>
+
+            <small>
+            <pre><code class="language-python">def pure_python_compute(f, dr_nondim):
+  answer = np.zeros(len(f)-2)
+  for i in range(1,f.shape[0]-1):
+    answer[i-1]=((i+1)*f[i+1]- 2*i*f[i] + (i-1)*f[i-1])/(i*dr_nondim**2)
+  return answer</code></pre>
+            </small>
+
+            <p>Finally, let's compare their running times:</p> 
+
+            <small>
+            <pre><code class="language-python">testarr = np.linspace(0,100,10000)
+%timeit pure_python_compute(testarr,1)
+%timeit fd_interior_spherical_axisymmetic_wrapper(testarr,1)</code></pre>
+            </small>
+
+            <p> Which shows: </p>
+
+            <pre><samp class="language-python">10 loops, best of 3: 20.7 ms per loop
+10000 loops, best of 3: 65.3 µs per loop</samp></pre>
+            
+            <p> This speedup of ~300x is absolutely critical given the number of times this function must be evaluated when solving a set of PDEs using the Method of Lines.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer class="footer" id="mainFooter"></footer>
+
+    <!-- Prism for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/components/prism-python.min.js"></script>
+  </body>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/clean-blog.min.js"></script>
+  <!-- load navbar and footer -->
+  <script> 
+    $(function(){
+      $("#mainNav").load("navbar.html"); 
+    });
+  </script>
+  <script> 
+    $(function(){
+      $("#mainFooter").load("footer.html"); 
+    });
+  </script>
+
+
+</html>
